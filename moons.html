@@ -101,12 +101,12 @@
         const sumDiameters = d3.sum(current.moons, d => d.diameterKm);
         
         // calculate space occupied by circle
-        const horizSpace = WIDTH - (MARGIN_PLANET + MARGIN_W*2 + current.moons.length + MARGIN_MOON);
-        const vertSpace = HEIGHT - MARGIN_H*2;
+        const horizSpace = WIDTH - (MARGIN_PLANET + MARGIN_W*2 + current.moons.length * MARGIN_MOON);
+        const vertSpace  = HEIGHT - MARGIN_H*2;
         
         // configure the scale
-        scale.range([0,d3.min(vertSpace,horizSpace)])
-            .domain([0, sumDiameters])
+        scale.range([0, d3.min([vertSpace, horizSpace])])
+                .domain([0, sumDiameters]);
             
         // results
         
@@ -117,10 +117,20 @@
         
     }  
     function draw() {
+        // Draw a guide line showing the orbital plane
+        plane.append("line")
+                .attr("x1",0)
+                .attr("x2",WIDTH)
+                .style("stroke","red");
         
+            
+        plane.append("circle").attr("class", "planet")
+            .datum(current.planet)
+            .attr("r", d => scale(d.diameterKm)/2)
+            .attr("cx", d => -(MARGIN_W + scale(d.diameterKm)/2));
     }
-    // Select the data for the initial view
-    // Bind the data to the graphical elements and draw the view
+
+ 
     // Add interactive behavior (change planets and update moons)
 </script>
 </html>
