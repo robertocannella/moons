@@ -144,15 +144,27 @@
             .attr("cx", d => -(MARGIN_W + scale(d.diameterKm)/2));
         
         // draw the moons
-        plane.selectAll('circle.moon')
+        plane.selectAll("g.moon")
             .data(current.moons)
             .enter()
-            .append('circle').attr('class', 'moon')
-            .attr('cx', d => d.cx)
-            .attr('r', d => scale(d.diameterKm)/2)
-        
-        
+            .append("g").attr("class", "moon")
+            .attr("transform", d => `translate(${[d.cx,0]})`)
+            .each(function() {  // each g object contains a circle and text
+                const moon = d3.select(this); // current group
+                moon.append("circle")
+                    .attr("r", d => scale(d.diameterKm)/2);
+                moon.append("text")
+                    .text(d => d.name)
+                    .attr("transform", (d) => {
+                        const x = scale(d.diameterKm/2) + MARGIN_MOON;
+                        const y = this.getBBox().height/4;
+                        return `rotate(-90) translate(${[x,y]})`;
+                    });
+            });
+
+
     }
+    
     
 
  
