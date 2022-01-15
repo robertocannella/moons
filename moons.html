@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>D3 Statistic Visualizations - Moons</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="styles.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@1,600&family=Roboto:wght@300&family=Tangerine:wght@700&display=swap" rel="stylesheet">
+
+
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <meta name="viewport" content="user-scalable=no, width=device-width" />
+    
+    
+            <!-- Using free Yanone Kaffeesatz fonts: https://www.yanone.de/fonts/kaffeesatz/ -->
+    <style>
+        svg { border: solid 1px gray; }
+        * { font-family: 'Yanone Kaffeesatz', sans-serif; }
+        text { font-size: 11px; }
+    </style>
+</head>
+<body>
+    
+<h1>Moons</h1>
+<form id='navigation'>
+    <button type="button" class="rc-btn rc-btn-outline-primary" id='previous' onclick="location.href='world.html'">previous</button>
+    <button type="button" class="rc-btn rc-btn-outline-primary" id='next' onclick="location.href='#'">next</button>
+</form>
+
+
+<h1>The largest moons</h1>
+<div id="container" width="500" height="300">
+    <svg height="100%" width="100%" id="moons"></svg>
+</div>
+<form></form>
+
+</body>
+
+<script>
+    // This object contains data used for the application
+    
+    const app = {
+        planets: [],  // data will be loaded from external file
+    }
+    
+    // This object contains variables that change for each view
+    const current = {
+        moons: [],      // moons to be displayed
+        id: undefined,  // key to select current object
+        planet: {},     // the object used in the current view
+        color: 'black'  // color of the planet
+    }
+    current.id = "p5";  // start with planet 5 (jupiter) id = "p5"
+    
+    // A function that will scale the diameter in km to pixels 
+    const scale = d3.scaleLinear();
+    
+    // Dimensions and spacing for the SVG graphics context
+    const WIDTH = 500, HEIGHT = 300;
+    const MARGIN_W = 20, MARGIN_H = 50;
+    const MARGIN_MOON = 10;
+    const MARGIN_PLANET = 100;
+    
+    // Obtain a handle to the SVG element and set up the view port
+    const svg = d3.select('#moons')
+        .attr("viewBox", `0 0 ${WIDTH} ${HEIGHT}`);
+        
+    // All moons will be anchored on this object (the orbital plane)
+    const plane = svg.append('g')
+        attr("transform", `translate(${[MARGING_PLANET, HEIGHT/2})`);
+        
+    // Next Steps
+    
+    // Load the data
+    // Select the data for the initial view
+    // Bind the data to the graphical elements and draw the view
+    // Add interactive behavior (change planets and update moons)
+</script>
+</html>
