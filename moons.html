@@ -18,6 +18,23 @@
         svg { border: solid 1px gray; }
         * { font-family: 'Yanone Kaffeesatz', sans-serif; }
         text { font-size: 11px; }
+        
+        .tooltip {
+            opacity: 0;
+        }
+        .tooltip rect {
+            fill: rgba(255,255,255,.8);
+            stroke: gray;
+            stroke-width: 2px;
+            height: 30px;
+            width: 100px;
+            rx: 5px;
+            ry: 5px;
+            pointer-events: none;
+        }
+        .tooltip text {
+            transform: translate(3px,18px);
+        }
     </style>
 </head>
 <body>
@@ -72,7 +89,10 @@
     const plane = svg.append('g')
         .attr("transform", `translate(${[MARGIN_PLANET, HEIGHT/2]})`);
         
-    // Next Steps
+    // Tooltip configuration (initially hidden: see CSS)
+    const tooltip = plane.append("g").attr("class", "tooltip");
+    tooltip.append("rect");
+    tooltip.append("text");
     
     // Load the data
     d3.json("sol_2016.json")
@@ -112,7 +132,7 @@
         // set up the current data object
         current.planet = app.planets.filter(p => p.id == current.id)[0];
         current.color  = app.colors[current.id.substring(1) - 3];
-        
+
         // Change page title
         d3.select('#planetName').text(() => current.planet.name)
         
@@ -193,10 +213,27 @@
                     const y = this.getBBox().height/4;
                     return `rotate(-90) translate(${[x,y]})`;
                 });
-            });
+            })
+            .on("mouseover", showTooltip)
+            .on("mouseout", hideTooltip);;
        
     }
-    
+    function showTooltip(d) {
+        
+        // if moon, d.cx is defined, otherwise is planet
+        const position = d.cx ? `translate(${[d.cx, scale(d.diameterKm/4)]})`
+                : "translate(-75,50)";
+        d3.select(".tooltip").raise() // place over other elements
+          .attr("transform", position)
+          .transition()
+             .style("opacity", 1)
+             .select("text")
+                .text("Diameter: " + d.diameterKm + " km");
+    }
+
+    function hideTooltip() {
+        d3.select(".tooltip").transition().style("opacity", 0);
+    }
     
 
  
