@@ -29,13 +29,13 @@
 </form>
 
 
-<h1>The largest moons</h1>
+<h2>The largest moons of <span id='planetName'></span></h2>
 <div id="container" width="500" height="300">
     <svg height="100%" width="100%" id="moons"></svg>
 </div>
 <form></form>
 
-</body>
+
 
 <script>
     // This object contains data used for the application
@@ -88,6 +88,9 @@
         // set up the current data object
         current.planet = app.planets.filter(p => p.id == current.id)[0];
         
+        // Change page title
+        d3.select('#planetName').text(() => current.planet.name)
+        
         // configure scales for this view
         // obtain diameter of the largest moon
         //console.log(current.planet[0].satellites)
@@ -108,29 +111,52 @@
         scale.range([0, d3.min([vertSpace, horizSpace])])
                 .domain([0, sumDiameters]);
             
-        // results
+        // sort moons accoring to size
+        current.moons.sort((a,b) => d3.descending(a.diameterKm, b.diameterKm));
+        // compute cx coordinates to position each moon
         
-        console.log("planet: ", current.planet);
-        console.log('largest moon diameter: ', maxDiameter);
-        console.log("Selected Moons: ", current.moons);
+        current.moons.forEach((moon, i) => {
+            let space = 0;
+            if(i>0){
+                let previous = current.moons[i-1];
+                space = previous.cx 
+                            + scale(previous.diameterKm) /2
+                            + MARGIN_MOON;
+            }
+            moon.cx = space + scale(moon.diameterKm) /2;
+            console.log(moon.name,moon.cx);
+        })
         
         
     }  
     function draw() {
-        // Draw a guide line showing the orbital plane
-        plane.append("line")
-                .attr("x1",0)
-                .attr("x2",WIDTH)
-                .style("stroke","red");
+        // // Draw a guide line showing the orbital plane
+        // plane.append("line")
+        //         .attr("x1",0)
+        //         .attr("x2",WIDTH)
+        //         .style("stroke","red");
         
-            
+        
+        // draw the planet
         plane.append("circle").attr("class", "planet")
             .datum(current.planet)
             .attr("r", d => scale(d.diameterKm)/2)
             .attr("cx", d => -(MARGIN_W + scale(d.diameterKm)/2));
+        
+        // draw the moons
+        plane.selectAll('circle.moon')
+            .data(current.moons)
+            .enter()
+            .append('circle').attr('class', 'moon')
+            .attr('cx', d => d.cx)
+            .attr('r', d => scale(d.diameterKm)/2)
+        
+        
     }
+    
 
  
     // Add interactive behavior (change planets and update moons)
 </script>
+</body>
 </html>
